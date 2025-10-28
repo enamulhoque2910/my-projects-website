@@ -19,25 +19,38 @@
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-100 flex flex-col min-h-screen">
-  <!-- Header -->
-  <header class="bg-blue-600 text-white text-center py-4 shadow-md">
-    <h1 class="text-2xl font-semibold">My Project Tracker</h1>
-  </header>
+<body class="bg-gray-100 min-h-screen flex flex-col items-center p-6">
+  <h1 class="text-3xl font-bold mb-6 text-blue-600">My Project Tracker</h1>
 
-  <!-- Main content -->
-  <main class="flex-grow flex items-center justify-center">
-    <div class="bg-white shadow-lg rounded-xl p-8 max-w-md w-full text-center">
-      <ul id="project-list" class="space-y-2 mb-4"></ul>
-      <button id="add-project" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg">+ Add New Project</button>
-    </div>
-  </main>
-
-  <!-- Footer -->
-  <footer class="bg-gray-200 text-center py-3 text-gray-600 text-sm">
-    © 2025 Enamul Hoque — Built with ❤️ on Mac mini
-  </footer>
+  <table class="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
+    <thead class="bg-blue-500 text-white">
+      <tr>
+        <th class="py-2 px-4">P/N</th>
+        <th class="py-2 px-4">Name</th>
+        <th class="py-2 px-4">Start</th>
+        <th class="py-2 px-4">End</th>
+        <th class="py-2 px-4">Cost</th>
+        <th class="py-2 px-4">Income</th>
+        <th class="py-2 px-4">Edit</th>
+        <th class="py-2 px-4">Delete</th>
+      </tr>
+    </thead>
+    <tbody id="projectTable" class="text-center">
+      <!-- Projects will appear here -->
+      <tr>
+        <td>1</td>
+        <td>Website Launch</td>
+        <td>2025-10-01</td>
+        <td>2025-10-20</td>
+        <td>$300</td>
+        <td>$500</td>
+        <td><button class="text-blue-500">Edit</button></td>
+        <td><button class="text-red-500">Delete</button></td>
+      </tr>
+    </tbody>
+  </table>
 
   <script src="script.js"></script>
 </body>
+
 </html>
