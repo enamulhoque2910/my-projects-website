@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://enamulhoque2910.github.io/my-projects-website/sitemap.xml
