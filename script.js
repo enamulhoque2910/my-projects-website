@@ -1,6 +1,16 @@
 const projectList = document.getElementById('project-list');
 const addButton = document.getElementById('add-project');
 
+// Firebase configuration
+const firebaseConfig = {
+  // paste your config here
+};
+
+// Initialize Firebase
+const app = firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+
 // Load saved projects
 const savedProjects = JSON.parse(localStorage.getItem('projects')) || [];
 savedProjects.forEach(name => addProject(name));
