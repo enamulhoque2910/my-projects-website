@@ -4,21 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>My Project Tracker | Enamul Hoque</title>
-  <meta name="description" content="A personal project tracking website by Enamul Hoque — built to organize, visualize, and monitor projects efficiently." />
-  <meta name="keywords" content="Enamul Hoque, project tracker, personal projects, productivity, portfolio" />
-  <meta name="author" content="Enamul Hoque" />
-
-  <!-- Social / Open Graph -->
-  <meta property="og:title" content="My Project Tracker | Enamul Hoque" />
-  <meta property="og:description" content="Track and organize your personal projects with a simple, modern interface." />
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://enamulhoque2910.github.io/my-projects-website/" />
-  <meta property="og:image" content="https://enamulhoque2910.github.io/my-projects-website/preview.png" />
 
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
 
-  <!-- Firebase SDKs (compat for browser use) -->
+  <!-- Firebase (Compat SDK for simplicity) -->
   <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore-compat.js"></script>
 </head>
@@ -26,10 +16,13 @@
 <body class="bg-gray-100 min-h-screen flex flex-col items-center p-6">
   <h1 class="text-3xl font-bold mb-6 text-blue-600">My Project Tracker</h1>
 
-  <div class="mb-4">
-    <button id="add-project" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">+ Add Project</button>
-  </div>
+  <!-- Add Project Button -->
+  <button id="add-project"
+    class="mb-4 bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg shadow">
+    + Add Project
+  </button>
 
+  <!-- Project Table -->
   <table class="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
     <thead class="bg-blue-500 text-white">
       <tr>
@@ -43,7 +36,9 @@
         <th class="py-2 px-4">Delete</th>
       </tr>
     </thead>
-    <tbody id="projectTable" class="text-center"></tbody>
+    <tbody id="projectTable" class="text-center">
+      <!-- Dynamic rows will appear here -->
+    </tbody>
   </table>
 
   <script src="script.js"></script>

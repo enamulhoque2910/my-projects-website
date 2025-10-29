@@ -1,4 +1,4 @@
-// Firebase config
+// Firebase Config
 const firebaseConfig = {
   apiKey: "AIzaSyB-Zr0KznpRdME07BurVi4utUy_lrLGFrA",
   authDomain: "rojnamcha-29dad.firebaseapp.com",
@@ -9,76 +9,89 @@ const firebaseConfig = {
   measurementId: "G-CSKXYC732M"
 };
 
-// Initialize Firebase
+// Initialize Firebase + Firestore
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
-const projectTable = document.getElementById("projectTable");
-const addButton = document.getElementById("add-project");
+// DOM elements
+const addButton = document.getElementById('add-project');
+const projectTable = document.getElementById('projectTable');
 
 // Load projects from Firestore
-async function loadProjects() {
-  projectTable.innerHTML = "";
-  const snapshot = await db.collection("projects").get();
-  let count = 1;
-  snapshot.forEach(doc => {
-    const data = doc.data();
-    addProjectRow(count++, doc.id, data);
+function loadProjects() {
+  db.collection("projects").get().then(snapshot => {
+    projectTable.innerHTML = ""; // Clear old data
+    let count = 1;
+    snapshot.forEach(doc => {
+      const data = doc.data();
+      addRow(doc.id, count++, data.name, data.start, data.end, data.cost, data.income);
+    });
   });
 }
 
-// Add new project
-addButton.addEventListener("click", async () => {
+// Add a new project
+addButton.addEventListener('click', async () => {
   const name = prompt("Enter project name:");
-  const start = prompt("Start date (YYYY-MM-DD):");
-  const end = prompt("End date (YYYY-MM-DD):");
-  const cost = prompt("Cost:");
-  const income = prompt("Income:");
+  const start = prompt("Enter start date (YYYY-MM-DD):");
+  const end = prompt("Enter end date (YYYY-MM-DD):");
+  const cost = prompt("Enter cost ($):");
+  const income = prompt("Enter income ($):");
 
-  if (name) {
-    await db.collection("projects").add({ name, start, end, cost, income });
-    loadProjects();
-  }
+  if (!name) return alert("Project name is required!");
+
+  await db.collection("projects").add({ name, start, end, cost, income });
+  loadProjects();
 });
 
-// Helper: create a row
-function addProjectRow(index, id, data) {
+// Helper: Add a table row
+function addRow(id, pn, name, start, end, cost, income) {
   const row = document.createElement("tr");
   row.innerHTML = `
-    <td class="py-2 px-4">${index}</td>
-    <td class="py-2 px-4">${data.name}</td>
-    <td class="py-2 px-4">${data.start || "-"}</td>
-    <td class="py-2 px-4">${data.end || "-"}</td>
-    <td class="py-2 px-4">${data.cost || "-"}</td>
-    <td class="py-2 px-4">${data.income || "-"}</td>
-    <td class="py-2 px-4"><button class="text-blue-500" onclick="editProject('${id}')">Edit</button></td>
-    <td class="py-2 px-4"><button class="text-red-500" onclick="deleteProject('${id}')">Delete</button></td>
+    <td class="py-2 px-4">${pn}</td>
+    <td class="py-2 px-4">${name || '-'}</td>
+    <td class="py-2 px-4">${start || '-'}</td>
+    <td class="py-2 px-4">${end || '-'}</td>
+    <td class="py-2 px-4">${cost || '-'}</td>
+    <td class="py-2 px-4">${income || '-'}</td>
+    <td class="py-2 px-4">
+      <button class="text-blue-500 hover:underline" onclick="editProject('${id}')">Edit</button>
+    </td>
+    <td class="py-2 px-4">
+      <button class="text-red-500 hover:underline" onclick="deleteProject('${id}')">Delete</button>
+    </td>
   `;
   projectTable.appendChild(row);
 }
 
 // Edit project
-async function editProject(id) {
+window.editProject = async function(id) {
   const doc = await db.collection("projects").doc(id).get();
+  if (!doc.exists) return alert("Not found!");
+
   const data = doc.data();
+  const newName = prompt("Edit name:", data.name);
+  const newStart = prompt("Edit start date:", data.start);
+  const newEnd = prompt("Edit end date:", data.end);
+  const newCost = prompt("Edit cost:", data.cost);
+  const newIncome = prompt("Edit income:", data.income);
 
-  const name = prompt("Edit name:", data.name);
-  const start = prompt("Edit start date:", data.start);
-  const end = prompt("Edit end date:", data.end);
-  const cost = prompt("Edit cost:", data.cost);
-  const income = prompt("Edit income:", data.income);
-
-  await db.collection("projects").doc(id).set({ name, start, end, cost, income });
+  await db.collection("projects").doc(id).update({
+    name: newName,
+    start: newStart,
+    end: newEnd,
+    cost: newCost,
+    income: newIncome
+  });
   loadProjects();
-}
+};
 
 // Delete project
-async function deleteProject(id) {
+window.deleteProject = async function(id) {
   if (confirm("Delete this project?")) {
     await db.collection("projects").doc(id).delete();
     loadProjects();
   }
-}
+};
 
 // Initial load
 loadProjects();
