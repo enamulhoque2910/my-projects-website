@@ -1,18 +1,23 @@
+// Get references to HTML elements
 const projectList = document.getElementById('project-list');
 const addButton = document.getElementById('add-project');
 
-// Firebase configuration
+// ✅ Firebase configuration (your real config)
 const firebaseConfig = {
-  // paste your Firebase config here
+  apiKey: "AIzaSyB-Zr0KznpRdME07BurVi4utUy_lrLGFrA",
+  authDomain: "rojnamcha-29dad.firebaseapp.com",
+  projectId: "rojnamcha-29dad",
+  storageBucket: "rojnamcha-29dad.firebasestorage.app",
+  messagingSenderId: "321159637777",
+  appId: "1:321159637777:web:3393675f4bc2c840b4fab0",
+  measurementId: "G-CSKXYC732M"
 };
 
-// Initialize Firebase
+// ✅ Initialize Firebase using compat version (no imports)
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
-
-
-// Load saved projects
+// Load saved projects (temporary local cache)
 const savedProjects = JSON.parse(localStorage.getItem('projects')) || [];
 savedProjects.forEach(name => addProject(name));
 
