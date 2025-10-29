@@ -2,7 +2,6 @@
 const projectList = document.getElementById('project-list');
 const addButton = document.getElementById('add-project');
 
-// ✅ Firebase configuration (your real config)
 const firebaseConfig = {
   apiKey: "AIzaSyB-Zr0KznpRdME07BurVi4utUy_lrLGFrA",
   authDomain: "rojnamcha-29dad.firebaseapp.com",
@@ -13,9 +12,9 @@ const firebaseConfig = {
   measurementId: "G-CSKXYC732M"
 };
 
-// ✅ Initialize Firebase using compat version (no imports)
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
+
 
 // Load saved projects (temporary local cache)
 const savedProjects = JSON.parse(localStorage.getItem('projects')) || [];
