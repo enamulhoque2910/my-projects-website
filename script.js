@@ -1,7 +1,4 @@
-// Get references to HTML elements
-const projectList = document.getElementById('project-list');
-const addButton = document.getElementById('add-project');
-
+// Firebase config
 const firebaseConfig = {
   apiKey: "AIzaSyB-Zr0KznpRdME07BurVi4utUy_lrLGFrA",
   authDomain: "rojnamcha-29dad.firebaseapp.com",
@@ -12,57 +9,76 @@ const firebaseConfig = {
   measurementId: "G-CSKXYC732M"
 };
 
+// Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
+const projectTable = document.getElementById("projectTable");
+const addButton = document.getElementById("add-project");
 
-// Load saved projects (temporary local cache)
-const savedProjects = JSON.parse(localStorage.getItem('projects')) || [];
-savedProjects.forEach(name => addProject(name));
+// Load projects from Firestore
+async function loadProjects() {
+  projectTable.innerHTML = "";
+  const snapshot = await db.collection("projects").get();
+  let count = 1;
+  snapshot.forEach(doc => {
+    const data = doc.data();
+    addProjectRow(count++, doc.id, data);
+  });
+}
 
-addButton.addEventListener('click', () => {
-  const projectName = prompt('Enter project name:');
-  if (projectName) {
-    addProject(projectName);
-    saveProjects();
+// Add new project
+addButton.addEventListener("click", async () => {
+  const name = prompt("Enter project name:");
+  const start = prompt("Start date (YYYY-MM-DD):");
+  const end = prompt("End date (YYYY-MM-DD):");
+  const cost = prompt("Cost:");
+  const income = prompt("Income:");
+
+  if (name) {
+    await db.collection("projects").add({ name, start, end, cost, income });
+    loadProjects();
   }
 });
 
-function addProject(name) {
-  const newItem = document.createElement('li');
-  newItem.className = 'flex justify-between items-center p-4 bg-gray-50 rounded-lg border border-gray-200';
-
-  const nameSpan = document.createElement('span');
-  nameSpan.textContent = name;
-
-  const buttonsDiv = document.createElement('div');
-  buttonsDiv.className = 'space-x-2';
-
-  const editBtn = document.createElement('button');
-  editBtn.textContent = 'Edit';
-  editBtn.className = 'text-blue-500 hover:underline';
-  editBtn.onclick = () => {
-    const newName = prompt('Edit project name:', nameSpan.textContent);
-    if (newName) {
-      nameSpan.textContent = newName;
-      saveProjects();
-    }
-  };
-
-  const delBtn = document.createElement('button');
-  delBtn.textContent = 'Delete';
-  delBtn.className = 'text-red-500 hover:underline';
-  delBtn.onclick = () => {
-    newItem.remove();
-    saveProjects();
-  };
-
-  buttonsDiv.append(editBtn, delBtn);
-  newItem.append(nameSpan, buttonsDiv);
-  projectList.appendChild(newItem);
+// Helper: create a row
+function addProjectRow(index, id, data) {
+  const row = document.createElement("tr");
+  row.innerHTML = `
+    <td class="py-2 px-4">${index}</td>
+    <td class="py-2 px-4">${data.name}</td>
+    <td class="py-2 px-4">${data.start || "-"}</td>
+    <td class="py-2 px-4">${data.end || "-"}</td>
+    <td class="py-2 px-4">${data.cost || "-"}</td>
+    <td class="py-2 px-4">${data.income || "-"}</td>
+    <td class="py-2 px-4"><button class="text-blue-500" onclick="editProject('${id}')">Edit</button></td>
+    <td class="py-2 px-4"><button class="text-red-500" onclick="deleteProject('${id}')">Delete</button></td>
+  `;
+  projectTable.appendChild(row);
 }
 
-function saveProjects() {
-  const projects = [...projectList.children].map(li => li.firstChild.textContent);
-  localStorage.setItem('projects', JSON.stringify(projects));
+// Edit project
+async function editProject(id) {
+  const doc = await db.collection("projects").doc(id).get();
+  const data = doc.data();
+
+  const name = prompt("Edit name:", data.name);
+  const start = prompt("Edit start date:", data.start);
+  const end = prompt("Edit end date:", data.end);
+  const cost = prompt("Edit cost:", data.cost);
+  const income = prompt("Edit income:", data.income);
+
+  await db.collection("projects").doc(id).set({ name, start, end, cost, income });
+  loadProjects();
 }
+
+// Delete project
+async function deleteProject(id) {
+  if (confirm("Delete this project?")) {
+    await db.collection("projects").doc(id).delete();
+    loadProjects();
+  }
+}
+
+// Initial load
+loadProjects();
