@@ -3,12 +3,13 @@ const addButton = document.getElementById('add-project');
 
 // Firebase configuration
 const firebaseConfig = {
-  // paste your config here
+  // paste your Firebase config here
 };
 
 // Initialize Firebase
-const app = firebase.initializeApp(firebaseConfig);
+firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
+
 
 
 // Load saved projects
